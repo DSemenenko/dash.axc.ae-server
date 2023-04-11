@@ -31,7 +31,7 @@ module.exports = async function (fastify, opts) {
   async function waitSocket(){
     // Зарегистрируйте плагин fastify-cors с необходимыми настройками
     await fastify.register(fastifyCors, {
-      origin: "http://localhost:3001", // Разрешить любой источник (не рекомендуется для продакшена)
+      origin: "http://dash.axc.ae", // Разрешить любой источник (не рекомендуется для продакшена)
       methods: ['GET', 'POST'], // Разрешенные методы
       allowedHeaders: ['Content-Type', 'Authorization'], // Разрешенные заголовки
       credentials: true // Разрешить отправку куки
@@ -39,7 +39,7 @@ module.exports = async function (fastify, opts) {
 
     const io = await require('socket.io')(fastify.server, {
       cors: {
-        origin: "http://localhost:3001", // Разрешить любой источник (не рекомендуется для продакшена)
+        origin: "http://dash.axc.ae", // Разрешить любой источник (не рекомендуется для продакшена)
         methods: ['GET', 'POST'], // Разрешенные методы
         allowedHeaders: ['Content-Type', 'Authorization'], // Разрешенные заголовки
         credentials: true // Разрешить отправку куки
