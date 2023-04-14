@@ -6,7 +6,7 @@ const fastify = require('fastify')({
   // allow requests from dash.axc.ae domain
   cors: {
     origin: 'http://dash.axc.ae',
-    methods: ['GET', 'POST']
+    methods: ['*']
   }
 })
 module.exports = async function (fastify, opts) {

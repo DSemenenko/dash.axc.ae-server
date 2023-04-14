@@ -34,7 +34,7 @@ module.exports = async function (fastify, opts) {
       origin: "*", // Разрешить любой источник (не рекомендуется для продакшена)
       methods: ['GET', 'POST'], // Разрешенные методы
       allowedHeaders: ['Content-Type', 'Authorization'], // Разрешенные заголовки
-      credentials: true // Разрешить отправку кукиs
+      credentials: true // Разрешить отправку куки
     });
 
     const io = await require('socket.io')(fastify.server, {
