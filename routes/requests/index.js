@@ -2,12 +2,8 @@
 // const fastify = require('fastify')()
 const sqlite3 = require('sqlite3')
 const fastifyCors = require('@fastify/cors');
-const fastify = require('fastify');
-
-
 
 module.exports = async function (fastify, opts) {
-  fastify.register(fastifyCors)
   // try {
   //   const io = await require('socket.io')(fastify.server, {
   //     cors: {
