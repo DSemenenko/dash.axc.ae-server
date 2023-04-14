@@ -2,8 +2,12 @@
 // const fastify = require('fastify')()
 const sqlite3 = require('sqlite3')
 const fastifyCors = require('@fastify/cors');
+const fastify = require('fastify');
+
+
 
 module.exports = async function (fastify, opts) {
+  fastify.register(fastifyCors)
   // try {
   //   const io = await require('socket.io')(fastify.server, {
   //     cors: {
@@ -29,13 +33,13 @@ module.exports = async function (fastify, opts) {
 
 
   async function waitSocket(){
-    // Зарегистрируйте плагин fastify-cors с необходимыми настройками
-    await fastify.register(fastifyCors, {
-      origin: "*", // Разрешить любой источник (не рекомендуется для продакшена)
-      methods: ['GET', 'POST'], // Разрешенные методы
-      allowedHeaders: ['Content-Type', 'Authorization'], // Разрешенные заголовки
-      credentials: true // Разрешить отправку куки
-    });
+    // // Зарегистрируйте плагин fastify-cors с необходимыми настройками
+    // await fastify.register(fastifyCors, {
+    //   origin: "*", // Разрешить любой источник (не рекомендуется для продакшена)
+    //   methods: ['GET', 'POST'], // Разрешенные методы
+    //   allowedHeaders: ['Content-Type', 'Authorization'], // Разрешенные заголовки
+    //   credentials: true // Разрешить отправку куки
+    // });
 
     const io = await require('socket.io')(fastify.server, {
       cors: {
