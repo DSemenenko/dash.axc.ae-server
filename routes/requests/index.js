@@ -29,13 +29,13 @@ module.exports = async function (fastify, opts) {
 
 
   async function waitSocket(){
-    // // Зарегистрируйте плагин fastify-cors с необходимыми настройками
-    // await fastify.register(fastifyCors, {
-    //   origin: "*", // Разрешить любой источник (не рекомендуется для продакшена)
-    //   methods: ['GET', 'POST'], // Разрешенные методы
-    //   allowedHeaders: ['Content-Type', 'Authorization'], // Разрешенные заголовки
-    //   credentials: true // Разрешить отправку куки
-    // });
+    // Зарегистрируйте плагин fastify-cors с необходимыми настройками
+    await fastify.register(fastifyCors, {
+      origin: "*", // Разрешить любой источник (не рекомендуется для продакшена)
+      methods: ['GET', 'POST'], // Разрешенные методы
+      allowedHeaders: ['Content-Type', 'Authorization'], // Разрешенные заголовки
+      credentials: true // Разрешить отправку кукиs
+    });
 
     const io = await require('socket.io')(fastify.server, {
       cors: {
