@@ -45,9 +45,6 @@ module.exports = async function (fastify, opts) {
         credentials: true // Разрешить отправку куки
       }
     });
-    app.use(cors({
-      origin: "*"
-    }))
     
     fastify.all('/socket.io/*', (request, reply) => {
       reply.raw.statusCode = 404;
