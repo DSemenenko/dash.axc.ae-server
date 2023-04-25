@@ -398,10 +398,9 @@ fastify.post('/announce-api', async(request, reply) => {
       if (err){
         reply.status(500).send({error: err.message})
       }else{
-        reply.send('Accept')
+        reply.send('Accept').status(200)
       }
     })
-    reply.send('Accept').status(200)
   })
 
   //GET lists
