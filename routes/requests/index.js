@@ -112,7 +112,7 @@ module.exports = async function (fastify, opts) {
   // Set up database connection
   //const db = new sqlite3.Database('/mydatabaasse.db');
   
-  const db = new sqlite3.Database('./db/salesannounce.db', (err) => {
+  const db = new sqlite3.Database('../db/salesannounce.db', (err) => {
     if (err) {
       console.error(err.message);
     } else{
@@ -388,7 +388,21 @@ fastify.post('/announce-api', async(request, reply) => {
     })
   })
 
-  
+
+  //post list
+  fastify.post('/list', (request, reply) => {
+    const data = [JSON.stringify(request.body)]
+    console.log(data);
+    
+
+    db.run(`INSERT INTO lists (data) VALUES (?)`, [data], (err) => {
+      if(err){
+        reply.status(500).send({error: err.message});
+        return;
+      }
+      reply.send('Accept')
+    })
+  })
 
   //POST lists
   fastify.post('/post-lists/:id', (request, reply) => {
