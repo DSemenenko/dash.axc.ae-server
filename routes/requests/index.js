@@ -346,6 +346,7 @@ fastify.post('/announce-api', async(request, reply) => {
     const {totallead} = request.body
     const {totaldeals} = request.body
     const {meter} = request.body
+    const {metergoal} =request.body
     
     let sql = `UPDATE dashdata SET `
     const params = [];
@@ -373,6 +374,10 @@ fastify.post('/announce-api', async(request, reply) => {
     if(meter){
       sql += `meter = ?, `;
       params.push(meter)
+    }
+    if(metergoal){
+      sql += `metergoal = ?, `;
+      params.push(metergoal)
     }
 
     sql = sql.slice(0, -2);// Удаление последней запятой и пробела
