@@ -92,7 +92,7 @@ module.exports = async function (fastify, opts) {
     }
   });
 
-  const reviews = `CREATE TABLE reviews (
+  const test = `CREATE TABLE reviewsRate (
     id INTEGER PRIMARY KEY, 
     Agent TEXT, 
     AgentImg TEXT,
@@ -102,9 +102,6 @@ module.exports = async function (fastify, opts) {
     Content TEXT
   )`
  
-db.run(reviews)
-db.run(`ALTER TABLE dashdata ADD COLUMN ReviewsRate`)
-db.run(`ALTER TABLE dashdata ADD COLUMN quantityReview`)
 // const addAlter = `ALTER TABLE sales ADD COLUMN timestamp`
 //const deleterow = `DELETE FROM sales WHERE id=7`
 //db.run(`ALTER TABLE sales ADD COLUMN timestamp`)
