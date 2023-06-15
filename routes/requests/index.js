@@ -4,29 +4,6 @@ const sqlite3 = require('sqlite3')
 const fastifyCors = require('@fastify/cors');
 
 module.exports = async function (fastify, opts) {
-  // try {
-  //   const io = await require('socket.io')(fastify.server, {
-  //     cors: {
-  //       origin: "*", // Разрешить любой источник (не рекомендуется для продакшена)
-  //       methods: ['GET', 'POST'], // Разрешенные методы
-  //       allowedHeaders: ['Content-Type', 'Authorization'], // Разрешенные заголовки
-  //       credentials: true // Разрешить отправку куки
-  //     }
-  //   });
-
-  //   io.on('connection', (socket) => {
-  //     console.log('Client connected:', socket.id)
-  
-  //     socket.emit('data', {"test": 123})
-      
-  //     socket.on('disconnect', () => {
-  //       console.log('client disconnected:', socket.id)
-  //     })
-  //   })
-  // } catch (error) {
-  //   throw error
-  // }
-
 
   async function waitSocket(){
     // Зарегистрируйте плагин fastify-cors с необходимыми настройками
@@ -107,11 +84,6 @@ module.exports = async function (fastify, opts) {
   waitSocket();
 
   
-  
-
-  // Set up database connection
-  //const db = new sqlite3.Database('/mydatabaasse.db');
-  
   const db = new sqlite3.Database('../db/salesannounce.db', (err) => {
     if (err) {
       console.error(err.message);
@@ -120,19 +92,19 @@ module.exports = async function (fastify, opts) {
     }
   });
 
-  // const test = `CREATE TABLE IF NOT EXISTS announce (
-  //   id INTEGER PRIMARY KEY, 
-  //   Agent TEXT, 
-  //   Agent_2 TEXT,
-  //   Developer TEXT,
-  //   Project TEXT,
-  //   agent1_img TEXT,
-  //   agent2_img TEXT,
-  //   DealType TEXT,
-  //   Amount TEXT,
-  //   Content TEXT
-  // )`
-
+  const reviews = `CREATE TABLE reviews (
+    id INTEGER PRIMARY KEY, 
+    Agent TEXT, 
+    AgentImg TEXT,
+    Commentor TEXT,
+    Date TEXT,
+    Stars INTEGER, 
+    Content TEXT
+  )`
+ 
+db.run(reviews)
+db.run(`ALTER TABLE dashdata ADD COLUMN ReviewsRate`)
+db.run(`ALTER TABLE dashdata ADD COLUMN quantityReview`)
 // const addAlter = `ALTER TABLE sales ADD COLUMN timestamp`
 //const deleterow = `DELETE FROM sales WHERE id=7`
 //db.run(`ALTER TABLE sales ADD COLUMN timestamp`)
@@ -140,45 +112,7 @@ module.exports = async function (fastify, opts) {
 
 
   
-//////////////////////////////////////////////////
-
-// fastify.post('/api', async(request, reply) => {
-
-//   const category = request.body.DealType
-  
-
-//   const {Agent, Agent_2, Developer, Project, agent1_img, agent2_img, DealType, Amount, Content, announce_id} = request.body
-
-//   const arrdb = [Agent, Agent_2, Developer, Project, agent1_img, agent2_img,  DealType, Amount, Content, announce_id]
-
-//   const sql = `
-//   INSERT INTO ${category} (
-//     Agent, 
-//     Agent_2, 
-//     Developer, 
-//     Project, 
-//     agent1_img, 
-//     agent2_img, 
-//     DealType, 
-//     Amount, 
-//     Content, 
-//     announce_id
-//     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-//   `
-
-
-//   if (category == 'Secondary'){
-//     db.run(sql, arrdb)
-//   }else if(category == 'Offplan'){
-//     db.run(sql, arrdb)
-//   }
-
-//   reply.send(200).then(reply.status(200))
-  
-// })
-
-//////////////////////////////////////////////////
-
+//
 fastify.get('/', async (request, reply) => {
   return 'Hello, World!'
 })
@@ -289,32 +223,6 @@ fastify.post('/announce-api', async(request, reply) => {
   })
 })
 
-
-//////////////////////////////////////////////////
-
-
-
-  //sales announce UPDATE
-  // fastify.post('/update-post', (request, reply) => {
-  //   const {announce_id, Agent, Agent_2, Developer, Project, agent1_img, agent2_img, DealType, Amount, Content} = request.body
-
-  //   const updateannounce = `
-  //   UPDATE sales SET 
-  //     Agent = ?, 
-  //     Agent_2 = ?, 
-  //     Developer = ?, 
-  //     Project = ?, 
-  //     agent1_img = ?, 
-  //     agent2_img = ?, 
-  //     DealType = ?, 
-  //     Amount = ?, 
-  //     Content = ? 
-  //   WHERE announce_id = ?`
-
-  //   const result = db.run(updateannounce, [announce_id, Agent, Agent_2, Developer, Project, agent1_img, agent2_img, DealType, Amount, Content])
-  //   reply.status(200)
-  // })
-
   //GET Board
   fastify.get('/getboard', async (request, reply) => {
     try {
@@ -347,7 +255,9 @@ fastify.post('/announce-api', async(request, reply) => {
     const {totaldeals} = request.body
     const {meter} = request.body
     const {metergoal} =request.body
-    
+    const {ReviewsRate} = request.body
+    const {quantityReview} = request.body
+     
     let sql = `UPDATE dashdata SET `
     const params = [];
 
@@ -378,6 +288,14 @@ fastify.post('/announce-api', async(request, reply) => {
     if(metergoal){
       sql += `metergoal = ?, `;
       params.push(metergoal)
+    }
+    if(ReviewsRate){
+      sql += `ReviewsRate = ?, `
+      params.push(ReviewsRate)
+    }
+    if(quantityReview){
+      sql += `quantityReview = ?, `
+      params.push(quantityReview)
     }
 
     sql = sql.slice(0, -2);// Удаление последней запятой и пробела
@@ -440,5 +358,38 @@ fastify.post('/announce-api', async(request, reply) => {
     }
   })
 
+  //post reviews
+  fastify.post('/reviews', async(request, reply) => {
+    const data = request.body
+    const {Agent, AgentImg, Commentor, Date, Stars, Content} = request.body
+    db.run(`INSERT INTO reviews (Agent, AgentImg, Commentor, Date, Stars, Content) VALUES (?, ?, ?, ?, ?, ?)`, [Agent, AgentImg, Commentor, Date, Stars, Content], (err) => {
+      if(err){
+        console.error('Error' + err)
+      }
+    })
+    db.all(`DELETE FROM reviews WHERE id = (SELECT MIN(id) FROM reviews) AND (SELECT COUNT(*) FROM reviews) > 5`)
+
+    reply.send('Accept')
+  })
+
+  fastify.get('/get-review', async(request, reply) => {
+    try {
+      const rows = await new Promise((resolve, reject) => {
+        db.all('SELECT * FROM reviews', (err, rows) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
+      })
+      reply.send(rows)
+    } catch (err) {
+      reply.status(500).send(err);
+    }
+
+
+    
+  })
   
 }
